@@ -16,8 +16,8 @@ class ConnectionPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.translate(translationOffset.dx, translationOffset.dy);
     var paint = Paint()
-      ..color = Colors.grey
-      ..strokeWidth = 2;
+      ..color = Colors.black
+      ..strokeWidth = 4;
 
     var path = Path();
 

@@ -4,6 +4,12 @@ import 'package:haystack_2_pipeline_editor/presentation/node_editor/connection_p
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/draggable_node.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/node.dart';
 
+enum DraggingType {
+  none,
+  node,
+  connection,
+}
+
 class EditorScreen extends StatefulWidget {
   const EditorScreen({super.key});
 
@@ -16,14 +22,14 @@ class _EditorScreenState extends State<EditorScreen> {
   List<ValueNotifier<Connection>> _connections = [];
   ValueNotifier<Offset> _translationOffset = ValueNotifier(Offset.zero);
   String? _connectingNodeId;
-  late bool _canPan;
+  late DraggingType _draggingType;
 
   @override
   void initState() {
     _nodes = [];
     _connections = [];
     _translationOffset = ValueNotifier(Offset.zero);
-    _canPan = true;
+    _draggingType = DraggingType.none;
     super.initState();
   }
 
@@ -56,11 +62,7 @@ class _EditorScreenState extends State<EditorScreen> {
       body: Container(
         color: Colors.white,
         child: GestureDetector(
-          onPanDown: (details) {
-            setState(() {
-              _canPan = true;
-            });
-          },
+          behavior: HitTestBehavior.deferToChild,
           onPanUpdate: (details) {
             // Define the constraint limits
             const double minOffsetX = -100.0;
@@ -77,7 +79,7 @@ class _EditorScreenState extends State<EditorScreen> {
             newOffsetY = newOffsetY.clamp(minOffsetY, maxOffsetY);
 
             // Update the _translationOffset with the constrained values
-            if ((_connectingNodeId == null && _canPan)) {
+            if ((_connectingNodeId == null && _draggingType == DraggingType.none)) {
               _translationOffset.value = Offset(newOffsetX, newOffsetY);
             }
           },
@@ -109,10 +111,13 @@ class _EditorScreenState extends State<EditorScreen> {
                                   vnode: vnode,
                                   onDragStart: () {
                                     setState(() {
-                                      _canPan = false;
+                                      _draggingType = DraggingType.node;
                                     });
                                   },
                                   onDragEnd: (details) {
+                                    setState(() {
+                                      _draggingType = DraggingType.none;
+                                    });
                                     final renderBox = context.findRenderObject() as RenderBox;
                                     final nodeOffset = renderBox.globalToLocal(details.offset);
                                     final initialPosition = vnode.value.position;

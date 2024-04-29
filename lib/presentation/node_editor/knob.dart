@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class Knob extends StatefulWidget {
   final Color color;
@@ -21,34 +22,58 @@ class Knob extends StatefulWidget {
 }
 
 class _KnobState extends State<Knob> {
-  bool _isHovering = false;
   bool _isDragging = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTapDown: (details) {
-        setState(() => _isDragging = true);
+      onPanDown: (details) {
+        setState(() {
+          _isDragging = true;
+        });
         widget.onConnectionStart(widget.key.toString());
       },
-      onTapUp: (details) {
-        setState(() => _isDragging = false);
+      onPanEnd: (details) {
+        setState(() {
+          _isDragging = false;
+        });
         widget.onConnectionEnd(widget.key.toString(), '');
       },
-      onTapCancel: () {
-        setState(() => _isDragging = false);
+      onPanCancel: () {
+        setState(() {
+          _isDragging = false;
+        });
         widget.onConnectionEnd(widget.key.toString(), '');
       },
-      child: AnimatedContainer(
-        duration: widget.duration,
-        width: widget.knobSize,
-        height: widget.knobSize,
-        transform: Matrix4.identity()..scale(_isHovering ? 1.5 : 1.0),
-        transformAlignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: widget.color,
-          shape: BoxShape.circle,
+      onPanUpdate: (details) {
+        // Absorb the pan gesture to prevent dragging the node widget
+        final RenderBox renderBox = context.findRenderObject() as RenderBox;
+        final position = renderBox.globalToLocal(details.globalPosition);
+        final hitTestSize = renderBox.size.width * 2;
+        final hitTestOffset = renderBox.size.width / 2;
+        final hitTestRect = Rect.fromLTWH(
+          position.dx - hitTestOffset,
+          position.dy - hitTestOffset,
+          hitTestSize,
+          hitTestSize,
+        );
+        final hitTestResult = renderBox.hitTest(BoxHitTestResult(), position: hitTestRect.center);
+        if (hitTestResult) {
+          widget.onConnectionEnd(widget.key.toString(), '');
+        }
+      },
+      child: AbsorbPointer(
+        child: AnimatedContainer(
+          duration: widget.duration,
+          width: widget.knobSize,
+          height: widget.knobSize,
+          transform: Matrix4.identity()..scale(_isDragging ? 1.2 : 1.0),
+          transformAlignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: _isDragging ? Colors.amber : widget.color,
+            shape: BoxShape.circle,
+          ),
         ),
       ),
     );

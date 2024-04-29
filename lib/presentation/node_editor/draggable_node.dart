@@ -21,6 +21,7 @@ class DraggableNode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Draggable(
+      hitTestBehavior: HitTestBehavior.opaque,
       childWhenDragging: Container(),
       feedback: Material(
         child: SizedBox(
