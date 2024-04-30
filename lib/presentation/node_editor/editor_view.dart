@@ -1,8 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/background_grid_painter.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/connection_painter.dart';
-import 'package:haystack_2_pipeline_editor/presentation/node_editor/draggable_node.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/node.dart';
+import 'package:haystack_2_pipeline_editor/presentation/node_editor/node_widget.dart';
 
 enum DraggingType {
   none,
@@ -93,43 +93,35 @@ class _EditorScreenState extends State<EditorScreen> {
                   translationOffset: offset,
                 ),
                 child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Stack(
-                      children: [
-                        // Render nodes
-                        for (var vnode in _nodes)
-                          ValueListenableBuilder<(Node, Offset)>(
+                  builder: (context, constraints) => Stack(
+                    children: _nodes
+                        .map(
+                          (vnode) => ValueListenableBuilder<(Node, Offset)>(
                             valueListenable: vnode,
-                            builder: (context, node, child) {
-                              return Positioned(
-                                left: node.$2.dx + offset.dx,
-                                top: node.$2.dy + offset.dy,
-                                child: GestureDetector(
-                                  onPanStart: (details) {},
-                                  onPanEnd: (details) {},
-                                  onPanUpdate: (details) {
-                                    setState(() {
-                                      vnode.value = (
-                                        vnode.value.$1,
-                                        vnode.value.$2.translate(details.delta.dx, details.delta.dy),
-                                      );
-                                    });
-                                  },
-                                  child: Container(
-                                    width: 100,
-                                    height: 80,
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
+                            builder: (context, node, child) => Positioned(
+                              left: node.$2.dx + offset.dx,
+                              top: node.$2.dy + offset.dy,
+                              child: GestureDetector(
+                                onPanUpdate: (details) {
+                                  setState(() {
+                                    vnode.value = (
+                                      vnode.value.$1,
+                                      vnode.value.$2.translate(details.delta.dx, details.delta.dy),
+                                    );
+                                  });
+                                },
+                                child: NodeWidget(
+                                  draggingType: _draggingType,
+                                  node: node.$1,
+                                  onConnectionStart: _handleConnectionStart,
+                                  onConnectionEnd: _handleConnectionEnd,
                                 ),
-                              );
-                            },
+                              ),
+                            ),
                           ),
-                      ],
-                    );
-                  },
+                        )
+                        .toList(),
+                  ),
                 ),
               );
             },

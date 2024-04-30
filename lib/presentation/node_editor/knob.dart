@@ -78,7 +78,7 @@ class _KnobState extends State<Knob> {
             duration: widget.duration,
             width: widget.knobSize,
             height: widget.knobSize,
-            transform: Matrix4.identity()..scale(_isHovering ? 1.2 : 1.0),
+            transform: Matrix4.identity()..scale(_isHovering || _isDragging ? 1.2 : 1.0),
             transformAlignment: Alignment.center,
             decoration: BoxDecoration(
               color: _isDragging ? Colors.amber : widget.color,

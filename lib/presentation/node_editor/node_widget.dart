@@ -32,7 +32,7 @@ class NodeWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Stack(
-        clipBehavior: Clip.none,
+        clipBehavior: Clip.hardEdge,
         children: [
           Center(
             child: Text(
