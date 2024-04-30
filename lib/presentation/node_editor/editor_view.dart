@@ -18,18 +18,17 @@ class EditorScreen extends StatefulWidget {
 }
 
 class _EditorScreenState extends State<EditorScreen> {
-  List<ValueNotifier<Node>> _nodes = [];
+  List<ValueNotifier<(Node, Offset)>> _nodes = [];
   List<ValueNotifier<Connection>> _connections = [];
   ValueNotifier<Offset> _translationOffset = ValueNotifier(Offset.zero);
   String? _connectingNodeId;
-  late DraggingType _draggingType;
+  final ValueNotifier<DraggingType> _draggingType = ValueNotifier(DraggingType.none);
 
   @override
   void initState() {
     _nodes = [];
     _connections = [];
     _translationOffset = ValueNotifier(Offset.zero);
-    _draggingType = DraggingType.none;
     super.initState();
   }
 
@@ -79,7 +78,7 @@ class _EditorScreenState extends State<EditorScreen> {
             newOffsetY = newOffsetY.clamp(minOffsetY, maxOffsetY);
 
             // Update the _translationOffset with the constrained values
-            if ((_connectingNodeId == null && _draggingType == DraggingType.none)) {
+            if ((_connectingNodeId == null && _draggingType.value == DraggingType.none)) {
               _translationOffset.value = Offset(newOffsetX, newOffsetY);
             }
           },
@@ -99,39 +98,31 @@ class _EditorScreenState extends State<EditorScreen> {
                       children: [
                         // Render nodes
                         for (var vnode in _nodes)
-                          ValueListenableBuilder<Node>(
+                          ValueListenableBuilder<(Node, Offset)>(
                             valueListenable: vnode,
                             builder: (context, node, child) {
                               return Positioned(
-                                left: node.position.dx + offset.dx,
-                                top: node.position.dy + offset.dy,
-                                child: DraggableNode(
-                                  onConnectionStart: _handleConnectionStart,
-                                  onConnectionEnd: _handleConnectionEnd,
-                                  vnode: vnode,
-                                  onDragStart: () {
+                                left: node.$2.dx + offset.dx,
+                                top: node.$2.dy + offset.dy,
+                                child: GestureDetector(
+                                  onPanStart: (details) {},
+                                  onPanEnd: (details) {},
+                                  onPanUpdate: (details) {
                                     setState(() {
-                                      _draggingType = DraggingType.node;
+                                      vnode.value = (
+                                        vnode.value.$1,
+                                        vnode.value.$2.translate(details.delta.dx, details.delta.dy),
+                                      );
                                     });
                                   },
-                                  onDragEnd: (details) {
-                                    setState(() {
-                                      _draggingType = DraggingType.none;
-                                    });
-                                    final renderBox = context.findRenderObject() as RenderBox;
-                                    final nodeOffset = renderBox.globalToLocal(details.offset);
-                                    final initialPosition = vnode.value.position;
-                                    final translationOffset = _EditorScreenState()._translationOffset.value;
-                                    final newPosition = initialPosition + nodeOffset - translationOffset;
-
-                                    // Constrain the node position within the canvas bounds
-                                    final constrainedPosition = Offset(
-                                      newPosition.dx.clamp(0.0, constraints.maxWidth - renderBox.size.width),
-                                      newPosition.dy.clamp(0.0, constraints.maxHeight - renderBox.size.height),
-                                    );
-
-                                    vnode.value = vnode.value.copyWith(position: constrainedPosition);
-                                  },
+                                  child: Container(
+                                    width: 100,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
                                 ),
                               );
                             },
@@ -150,12 +141,12 @@ class _EditorScreenState extends State<EditorScreen> {
           // Add a new node
           setState(() {
             _nodes.add(
-              ValueNotifier<Node>(
+              ValueNotifier<(Node, Offset)>((
                 Node(
                   id: 'node_${_nodes.length}',
-                  position: const Offset(100, 100),
                 ),
-              ),
+                const Offset(100, 100)
+              )),
             );
           });
         },

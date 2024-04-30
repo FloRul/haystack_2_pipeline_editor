@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:haystack_2_pipeline_editor/presentation/node_editor/editor_view.dart';
 
 class Knob extends StatefulWidget {
   final Color color;
@@ -7,6 +8,7 @@ class Knob extends StatefulWidget {
   final double knobSize;
   final Function(String) onConnectionStart;
   final Function(String, String) onConnectionEnd;
+  final ValueNotifier<DraggingType> draggingType;
 
   const Knob({
     super.key,
@@ -15,6 +17,7 @@ class Knob extends StatefulWidget {
     required this.knobSize,
     required this.onConnectionStart,
     required this.onConnectionEnd,
+    required this.draggingType,
   });
 
   @override
@@ -23,6 +26,7 @@ class Knob extends StatefulWidget {
 
 class _KnobState extends State<Knob> {
   bool _isDragging = false;
+  bool _isHovering = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,18 +34,21 @@ class _KnobState extends State<Knob> {
       behavior: HitTestBehavior.opaque,
       onPanDown: (details) {
         setState(() {
+          widget.draggingType.value = DraggingType.connection;
           _isDragging = true;
         });
         widget.onConnectionStart(widget.key.toString());
       },
       onPanEnd: (details) {
         setState(() {
+          widget.draggingType.value = DraggingType.none;
           _isDragging = false;
         });
         widget.onConnectionEnd(widget.key.toString(), '');
       },
       onPanCancel: () {
         setState(() {
+          widget.draggingType.value = DraggingType.none;
           _isDragging = false;
         });
         widget.onConnectionEnd(widget.key.toString(), '');
@@ -63,16 +70,20 @@ class _KnobState extends State<Knob> {
           widget.onConnectionEnd(widget.key.toString(), '');
         }
       },
-      child: AbsorbPointer(
-        child: AnimatedContainer(
-          duration: widget.duration,
-          width: widget.knobSize,
-          height: widget.knobSize,
-          transform: Matrix4.identity()..scale(_isDragging ? 1.2 : 1.0),
-          transformAlignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: _isDragging ? Colors.amber : widget.color,
-            shape: BoxShape.circle,
+      child: MouseRegion(
+        onEnter: (event) => setState(() => _isHovering = true),
+        onExit: (event) => setState(() => _isHovering = false),
+        child: AbsorbPointer(
+          child: AnimatedContainer(
+            duration: widget.duration,
+            width: widget.knobSize,
+            height: widget.knobSize,
+            transform: Matrix4.identity()..scale(_isHovering ? 1.2 : 1.0),
+            transformAlignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: _isDragging ? Colors.amber : widget.color,
+              shape: BoxShape.circle,
+            ),
           ),
         ),
       ),

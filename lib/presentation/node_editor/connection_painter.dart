@@ -2,7 +2,7 @@
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/node.dart';
 
 class ConnectionPainter extends CustomPainter {
-  final List<Node> nodes;
+  final List<(Node, Offset)> nodes;
   final List<Connection> connections;
   final Offset translationOffset;
 
@@ -22,12 +22,18 @@ class ConnectionPainter extends CustomPainter {
     var path = Path();
 
     for (var connection in connections) {
-      var sourceNode = nodes.firstWhere((node) => node.id == connection.sourceNodeId);
-      var destinationNode = nodes.firstWhere((node) => node.id == connection.destinationNodeId);
+      var sourceNode = nodes.firstWhere((node) => node.$1.id == connection.sourceNodeId);
+      var destinationNode = nodes.firstWhere(
+        (node) => node.$1.id == connection.destinationNodeId,
+      );
       path.reset();
-      path.moveTo(sourceNode.position.dx, sourceNode.position.dy);
-      path.quadraticBezierTo(destinationNode.position.dx, destinationNode.position.dy, destinationNode.position.dx,
-          destinationNode.position.dy);
+      path.moveTo(sourceNode.$2.dx, sourceNode.$2.dy);
+      path.quadraticBezierTo(
+        destinationNode.$2.dx,
+        destinationNode.$2.dy,
+        destinationNode.$2.dx,
+        destinationNode.$2.dy,
+      );
       canvas.drawPath(path, paint);
     }
   }
