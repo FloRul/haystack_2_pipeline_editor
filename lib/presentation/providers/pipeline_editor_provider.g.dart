@@ -7,7 +7,7 @@ part of 'pipeline_editor_provider.dart';
 // **************************************************************************
 
 String _$pipelineEditorStateNotifierHash() =>
-    r'9f8b8f9a2dabdd4cc10248e5917758f3c848226b';
+    r'e0c88bca296114e635d0eb609258341bf35aaf6c';
 
 /// See also [PipelineEditorStateNotifier].
 @ProviderFor(PipelineEditorStateNotifier)

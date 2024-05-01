@@ -20,8 +20,8 @@ class PipelineEditor extends ConsumerWidget {
               notifier.updateNodePosition(
                 nodeUI.nodeId,
                 Offset(
-                  nodeUI.dx + details.delta.dx,
-                  nodeUI.dy + details.delta.dy,
+                  details.delta.dx,
+                  details.delta.dy,
                 ),
               );
             },

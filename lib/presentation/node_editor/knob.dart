@@ -1,16 +1,16 @@
 ﻿import 'package:flutter/material.dart';
 
 class Knob extends StatefulWidget {
-  final Color color;
-  final Duration duration;
-  final double knobSize;
-
   const Knob({
     super.key,
     required this.color,
     required this.duration,
     required this.knobSize,
   });
+
+  final Color color;
+  final Duration duration;
+  final double knobSize;
 
   @override
   State<Knob> createState() => _KnobState();

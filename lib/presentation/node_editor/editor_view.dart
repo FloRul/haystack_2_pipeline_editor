@@ -21,7 +21,7 @@ class EditorScreen extends ConsumerWidget {
         color: Colors.white,
         child: GestureDetector(
           behavior: HitTestBehavior.deferToChild,
-          onPanUpdate: (details) => notifier.onDragStart(details.delta),
+          onPanUpdate: (details) => notifier.onPanGrid(details.delta),
           child: CustomPaint(
             painter: BackgroundGridPainter(
               maxGridSize: maxGridSize,

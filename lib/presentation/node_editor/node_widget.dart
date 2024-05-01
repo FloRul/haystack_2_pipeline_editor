@@ -13,7 +13,7 @@ class NodeWidget extends StatelessWidget {
   final knobSize = 20.0;
 
   final double width = 120;
-  final double height = 80;
+  final double height = 100;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +28,14 @@ class NodeWidget extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Center(
-            child: Text(
-              node.nodeId,
-              style: const TextStyle(color: Colors.white),
+            child: Column(
+              children: [
+                Text(
+                  node.nodeId,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Text('${node.dx.ceil()}, ${node.dy.ceil()}')
+              ],
             ),
           ),
           Positioned(

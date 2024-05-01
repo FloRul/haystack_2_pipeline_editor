@@ -32,8 +32,8 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
       nodesUI: state.nodesUI.map((nodeUI) {
         if (nodeUI.nodeId == nodeId) {
           return nodeUI.copyWith(
-            dx: offset.dx + state.dragOffset.dx,
-            dy: offset.dy + state.dragOffset.dy,
+            dx: offset.dx + nodeUI.dx,
+            dy: offset.dy + nodeUI.dy,
           );
         }
         return nodeUI;
@@ -41,13 +41,16 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
     );
   }
 
-  void onDragStart(Offset delta) {
+  void onPanGrid(Offset delta) {
     var nextOffset = state.dragOffset + delta;
     if ((nextOffset.dx <= state.maxDragOffset && nextOffset.dy <= state.maxDragOffset) &&
         (nextOffset.dx >= -state.maxDragOffset && nextOffset.dy >= -state.maxDragOffset)) {
       state = state.copyWith(
         dragOffset: nextOffset,
       );
+      for (int i = 0; i < state.nodesUI.length; i++) {
+        updateNodePosition(state.nodesUI[i].nodeId, delta);
+      }
     }
   }
 }
