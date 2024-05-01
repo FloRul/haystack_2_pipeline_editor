@@ -41,7 +41,13 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
     );
   }
 
-  void onDragStart(Offset offset) {
-    state = state.copyWith(dragOffset: state.dragOffset + offset);
+  void onDragStart(Offset delta) {
+    var nextOffset = state.dragOffset + delta;
+    if ((nextOffset.dx <= state.maxDragOffset && nextOffset.dy <= state.maxDragOffset) &&
+        (nextOffset.dx >= -state.maxDragOffset && nextOffset.dy >= -state.maxDragOffset)) {
+      state = state.copyWith(
+        dragOffset: nextOffset,
+      );
+    }
   }
 }

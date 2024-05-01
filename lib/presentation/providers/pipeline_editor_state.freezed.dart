@@ -22,6 +22,7 @@ mixin _$PipelineEditorState {
   List<SocketUI> get socketsUI => throw _privateConstructorUsedError;
   Offset get dragOffset => throw _privateConstructorUsedError;
   double get maxGridSize => throw _privateConstructorUsedError;
+  double get maxDragOffset => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PipelineEditorStateCopyWith<PipelineEditorState> get copyWith =>
@@ -40,7 +41,8 @@ abstract class $PipelineEditorStateCopyWith<$Res> {
       List<NodeUI> nodesUI,
       List<SocketUI> socketsUI,
       Offset dragOffset,
-      double maxGridSize});
+      double maxGridSize,
+      double maxDragOffset});
 }
 
 /// @nodoc
@@ -62,6 +64,7 @@ class _$PipelineEditorStateCopyWithImpl<$Res, $Val extends PipelineEditorState>
     Object? socketsUI = null,
     Object? dragOffset = null,
     Object? maxGridSize = null,
+    Object? maxDragOffset = null,
   }) {
     return _then(_value.copyWith(
       nodes: null == nodes
@@ -88,6 +91,10 @@ class _$PipelineEditorStateCopyWithImpl<$Res, $Val extends PipelineEditorState>
           ? _value.maxGridSize
           : maxGridSize // ignore: cast_nullable_to_non_nullable
               as double,
+      maxDragOffset: null == maxDragOffset
+          ? _value.maxDragOffset
+          : maxDragOffset // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 }
@@ -106,7 +113,8 @@ abstract class _$$PipelineStateImplCopyWith<$Res>
       List<NodeUI> nodesUI,
       List<SocketUI> socketsUI,
       Offset dragOffset,
-      double maxGridSize});
+      double maxGridSize,
+      double maxDragOffset});
 }
 
 /// @nodoc
@@ -126,6 +134,7 @@ class __$$PipelineStateImplCopyWithImpl<$Res>
     Object? socketsUI = null,
     Object? dragOffset = null,
     Object? maxGridSize = null,
+    Object? maxDragOffset = null,
   }) {
     return _then(_$PipelineStateImpl(
       nodes: null == nodes
@@ -152,6 +161,10 @@ class __$$PipelineStateImplCopyWithImpl<$Res>
           ? _value.maxGridSize
           : maxGridSize // ignore: cast_nullable_to_non_nullable
               as double,
+      maxDragOffset: null == maxDragOffset
+          ? _value.maxDragOffset
+          : maxDragOffset // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -165,7 +178,8 @@ class _$PipelineStateImpl implements _PipelineState {
       required final List<NodeUI> nodesUI,
       required final List<SocketUI> socketsUI,
       required this.dragOffset,
-      required this.maxGridSize})
+      required this.maxGridSize,
+      required this.maxDragOffset})
       : _nodes = nodes,
         _connections = connections,
         _nodesUI = nodesUI,
@@ -207,10 +221,12 @@ class _$PipelineStateImpl implements _PipelineState {
   final Offset dragOffset;
   @override
   final double maxGridSize;
+  @override
+  final double maxDragOffset;
 
   @override
   String toString() {
-    return 'PipelineEditorState(nodes: $nodes, connections: $connections, nodesUI: $nodesUI, socketsUI: $socketsUI, dragOffset: $dragOffset, maxGridSize: $maxGridSize)';
+    return 'PipelineEditorState(nodes: $nodes, connections: $connections, nodesUI: $nodesUI, socketsUI: $socketsUI, dragOffset: $dragOffset, maxGridSize: $maxGridSize, maxDragOffset: $maxDragOffset)';
   }
 
   @override
@@ -227,7 +243,9 @@ class _$PipelineStateImpl implements _PipelineState {
             (identical(other.dragOffset, dragOffset) ||
                 other.dragOffset == dragOffset) &&
             (identical(other.maxGridSize, maxGridSize) ||
-                other.maxGridSize == maxGridSize));
+                other.maxGridSize == maxGridSize) &&
+            (identical(other.maxDragOffset, maxDragOffset) ||
+                other.maxDragOffset == maxDragOffset));
   }
 
   @override
@@ -238,7 +256,8 @@ class _$PipelineStateImpl implements _PipelineState {
       const DeepCollectionEquality().hash(_nodesUI),
       const DeepCollectionEquality().hash(_socketsUI),
       dragOffset,
-      maxGridSize);
+      maxGridSize,
+      maxDragOffset);
 
   @JsonKey(ignore: true)
   @override
@@ -254,7 +273,8 @@ abstract class _PipelineState implements PipelineEditorState {
       required final List<NodeUI> nodesUI,
       required final List<SocketUI> socketsUI,
       required final Offset dragOffset,
-      required final double maxGridSize}) = _$PipelineStateImpl;
+      required final double maxGridSize,
+      required final double maxDragOffset}) = _$PipelineStateImpl;
 
   @override
   List<BaseNode> get nodes;
@@ -268,6 +288,8 @@ abstract class _PipelineState implements PipelineEditorState {
   Offset get dragOffset;
   @override
   double get maxGridSize;
+  @override
+  double get maxDragOffset;
   @override
   @JsonKey(ignore: true)
   _$$PipelineStateImplCopyWith<_$PipelineStateImpl> get copyWith =>

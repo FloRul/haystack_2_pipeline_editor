@@ -13,6 +13,7 @@ class PipelineEditorState with _$PipelineEditorState {
     required List<SocketUI> socketsUI,
     required Offset dragOffset,
     required double maxGridSize,
+    required double maxDragOffset,
   }) = _PipelineState;
 
   factory PipelineEditorState.initial() => const PipelineEditorState(
@@ -22,5 +23,6 @@ class PipelineEditorState with _$PipelineEditorState {
         socketsUI: [],
         dragOffset: Offset.zero,
         maxGridSize: 1000,
+        maxDragOffset: 100,
       );
 }
