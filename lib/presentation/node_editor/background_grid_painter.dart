@@ -1,23 +1,27 @@
 ﻿import 'package:flutter/material.dart';
 
 class BackgroundGridPainter extends CustomPainter {
-  BackgroundGridPainter({required this.translationOffset});
+  BackgroundGridPainter({
+    required this.translationOffset,
+    required this.maxGridSize,
+  });
 
   final Offset translationOffset;
+  final double maxGridSize;
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.translate(translationOffset.dx, translationOffset.dy);
     var paint = Paint()
-      ..color = Colors.grey[200]!
+      ..color = Colors.red[200]!
       ..strokeWidth = 1;
 
-    for (var i = 0; i < size.width; i += 10) {
-      canvas.drawLine(Offset(i.toDouble(), 0), Offset(i.toDouble(), size.height), paint);
+    for (var i = 0; i < maxGridSize; i += 10) {
+      canvas.drawLine(Offset(i.toDouble(), 0), Offset(i.toDouble(), maxGridSize), paint);
     }
 
-    for (var i = 0; i < size.height; i += 10) {
-      canvas.drawLine(Offset(0, i.toDouble()), Offset(size.width, i.toDouble()), paint);
+    for (var i = 0; i < maxGridSize; i += 10) {
+      canvas.drawLine(Offset(0, i.toDouble()), Offset(maxGridSize, i.toDouble()), paint);
     }
   }
 

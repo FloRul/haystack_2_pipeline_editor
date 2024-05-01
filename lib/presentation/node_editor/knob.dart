@@ -1,23 +1,15 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:haystack_2_pipeline_editor/presentation/node_editor/editor_view.dart';
 
 class Knob extends StatefulWidget {
   final Color color;
   final Duration duration;
   final double knobSize;
-  final Function(String) onConnectionStart;
-  final Function(String, String) onConnectionEnd;
-  final ValueNotifier<DraggingType> draggingType;
 
   const Knob({
     super.key,
     required this.color,
     required this.duration,
     required this.knobSize,
-    required this.onConnectionStart,
-    required this.onConnectionEnd,
-    required this.draggingType,
   });
 
   @override
@@ -27,53 +19,41 @@ class Knob extends StatefulWidget {
 class _KnobState extends State<Knob> {
   bool _isDragging = false;
   bool _isHovering = false;
+  Offset _cursorOffset = Offset.zero;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onPanDown: (details) {
-        setState(() {
-          widget.draggingType.value = DraggingType.connection;
-          _isDragging = true;
-        });
-        widget.onConnectionStart(widget.key.toString());
-      },
-      onPanEnd: (details) {
-        setState(() {
-          widget.draggingType.value = DraggingType.none;
-          _isDragging = false;
-        });
-        widget.onConnectionEnd(widget.key.toString(), '');
-      },
-      onPanCancel: () {
-        setState(() {
-          widget.draggingType.value = DraggingType.none;
-          _isDragging = false;
-        });
-        widget.onConnectionEnd(widget.key.toString(), '');
-      },
-      onPanUpdate: (details) {
-        // Absorb the pan gesture to prevent dragging the node widget
-        final RenderBox renderBox = context.findRenderObject() as RenderBox;
-        final position = renderBox.globalToLocal(details.globalPosition);
-        final hitTestSize = renderBox.size.width * 2;
-        final hitTestOffset = renderBox.size.width / 2;
-        final hitTestRect = Rect.fromLTWH(
-          position.dx - hitTestOffset,
-          position.dy - hitTestOffset,
-          hitTestSize,
-          hitTestSize,
-        );
-        final hitTestResult = renderBox.hitTest(BoxHitTestResult(), position: hitTestRect.center);
-        if (hitTestResult) {
-          widget.onConnectionEnd(widget.key.toString(), '');
-        }
-      },
-      child: MouseRegion(
-        onEnter: (event) => setState(() => _isHovering = true),
-        onExit: (event) => setState(() => _isHovering = false),
-        child: AbsorbPointer(
+    return CustomPaint(
+      painter: KnobPainter(
+        isDragging: _isDragging,
+        cursorPosition: _cursorOffset,
+        knobSize: widget.knobSize,
+      ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onPanDown: (details) {
+          setState(() {
+            _isDragging = true;
+          });
+        },
+        onPanEnd: (details) {
+          setState(() {
+            _isDragging = false;
+          });
+        },
+        onPanCancel: () {
+          setState(() {
+            _isDragging = false;
+          });
+        },
+        onPanUpdate: (details) {
+          setState(() {
+            _cursorOffset = details.localPosition;
+          });
+        },
+        child: MouseRegion(
+          onEnter: (event) => setState(() => _isHovering = true),
+          onExit: (event) => setState(() => _isHovering = false),
           child: AnimatedContainer(
             duration: widget.duration,
             width: widget.knobSize,
@@ -88,5 +68,62 @@ class _KnobState extends State<Knob> {
         ),
       ),
     );
+  }
+
+  Knob? _findKnobToConnect() {
+    final currentContext = context;
+    final currentRenderBox = currentContext.findRenderObject() as RenderBox;
+    final currentPosition = currentRenderBox.localToGlobal(_cursorOffset);
+
+    Knob? nearestKnob;
+    double minDistance = double.infinity;
+
+    void findNearestKnob(Element element) {
+      if (element.widget is Knob && element.widget != widget) {
+        final knobRenderBox = element.findRenderObject() as RenderBox;
+        final knobPosition = knobRenderBox.localToGlobal(Offset.zero);
+        final distance = (knobPosition - currentPosition).distance;
+
+        if (distance < minDistance && distance <= 50.0) {
+          nearestKnob = element.widget as Knob;
+          minDistance = distance;
+        }
+      }
+      element.visitChildren(findNearestKnob);
+    }
+
+    currentContext.visitChildElements(findNearestKnob);
+
+    return nearestKnob;
+  }
+}
+
+class KnobPainter extends CustomPainter {
+  final bool isDragging;
+  final Offset cursorPosition;
+  final double knobSize;
+
+  KnobPainter({
+    required this.isDragging,
+    required this.cursorPosition,
+    required this.knobSize,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (isDragging) {
+      final paint = Paint()
+        ..color = Colors.black
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 4.0;
+
+      final knobCenter = Offset(size.width / 2, size.height / 2);
+      canvas.drawLine(knobCenter, cursorPosition, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
