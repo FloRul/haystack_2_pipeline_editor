@@ -65,32 +65,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-class EditorView extends StatelessWidget {
-  const EditorView({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const Stack(
-      children: [
-        // Align(
-        //   alignment: const Alignment(-1, -1),
-        //   child: Container(
-        //       color: Theme.of(context).colorScheme.surface,
-        //       width: 200,
-        //       height: 200,
-        //       child: const Column(
-        //         children: [
-        //           Text('Node 1'),
-        //           Text('Node 2'),
-        //           Text('Node 3'),
-        //         ],
-        //       )),
-        // ),
-        EditorScreen(),
-      ],
-    );
-  }
-}

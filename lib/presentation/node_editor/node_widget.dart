@@ -1,5 +1,4 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:haystack_2_pipeline_editor/models/nodes/base_node.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/knob.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/nodes.dart';
 
@@ -12,8 +11,8 @@ class NodeWidget extends StatelessWidget {
   });
 
   final NodeUI node;
-  final SocketUI inputSocket;
-  final SocketUI outputSocket;
+  final SocketUI? inputSocket;
+  final SocketUI? outputSocket;
 
   final knobSize = 20.0;
 
@@ -43,28 +42,30 @@ class NodeWidget extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            left: knobSize / 4,
-            top: height / 2 - knobSize / 2,
-            child: Knob(
-              key: ValueKey('${node.id}_input'),
-              color: Colors.red,
-              duration: const Duration(milliseconds: 50),
-              knobSize: knobSize,
-              socket: inputSocket,
+          if (inputSocket != null)
+            Positioned(
+              left: knobSize / 4,
+              top: height / 2 - knobSize / 2,
+              child: Knob(
+                key: ValueKey('${node.id}_input'),
+                color: Colors.red,
+                duration: const Duration(milliseconds: 50),
+                knobSize: knobSize,
+                socket: inputSocket!,
+              ),
             ),
-          ),
-          Positioned(
-            right: knobSize / 4,
-            top: height / 2 - knobSize / 2,
-            child: Knob(
-              key: ValueKey('${node.id}_output'),
-              color: Colors.green,
-              duration: const Duration(milliseconds: 50),
-              knobSize: knobSize,
-              socket: outputSocket,
+          if (outputSocket != null)
+            Positioned(
+              right: knobSize / 4,
+              top: height / 2 - knobSize / 2,
+              child: Knob(
+                key: ValueKey('${node.id}_output'),
+                color: Colors.green,
+                duration: const Duration(milliseconds: 50),
+                knobSize: knobSize,
+                socket: outputSocket!,
+              ),
             ),
-          ),
         ],
       ),
     );

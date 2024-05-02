@@ -7,11 +7,8 @@ import 'package:haystack_2_pipeline_editor/presentation/node_editor/painters/con
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/painters/merged_painter.dart';
 import 'package:haystack_2_pipeline_editor/presentation/providers/pipeline_editor_provider.dart';
 
-typedef DraggingConnection = (String, Offset);
-typedef SocketConnection = (String, String);
-
-class EditorScreen extends ConsumerWidget {
-  const EditorScreen({super.key});
+class EditorView extends ConsumerWidget {
+  const EditorView({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -20,6 +17,7 @@ class EditorScreen extends ConsumerWidget {
     var gridOffset = ref.watch(pipelineEditorStateNotifierProvider.select((value) => value.gridOffset));
     var connections = ref.watch(pipelineEditorStateNotifierProvider.select((value) => value.connections));
     var nodes = ref.watch(pipelineEditorStateNotifierProvider.select((state) => state.nodesUI));
+    var sockets = ref.watch(pipelineEditorStateNotifierProvider.select((state) => state.sockets));
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -53,23 +51,13 @@ class EditorScreen extends ConsumerWidget {
                     },
                     child: NodeWidget(
                       node: nodeUI,
-                      inputSocket: ref.watch(
-                        pipelineEditorStateNotifierProvider.select(
-                          (state) {
-                            return state.sockets.firstWhere(
-                              (socket) => socket.nodeId == nodeUI.id && socket.type == SocketType.input,
-                            );
-                          },
-                        ),
+                      inputSocket: sockets.firstWhereOrNull(
+                        (socket) => socket.nodeId == nodeUI.id && socket.type == SocketType.input,
+                        orElse: () => null,
                       ),
-                      outputSocket: ref.watch(
-                        pipelineEditorStateNotifierProvider.select(
-                          (state) {
-                            return state.sockets.firstWhere(
-                              (socket) => socket.nodeId == nodeUI.id && socket.type == SocketType.output,
-                            );
-                          },
-                        ),
+                      outputSocket: sockets.firstWhereOrNull(
+                        (socket) => socket.nodeId == nodeUI.id && socket.type == SocketType.output,
+                        orElse: () => null,
                       ),
                     ),
                   ),
@@ -102,5 +90,16 @@ class EditorScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+extension ListX<T> on List<T> {
+  T? firstWhereOrNull(bool Function(T) test, {T? Function()? orElse}) {
+    for (var element in this) {
+      if (test(element)) {
+        return element;
+      }
+    }
+    return orElse?.call();
   }
 }

@@ -24,6 +24,7 @@ class _SidebarState extends State<Sidebar> {
   @override
   Widget build(BuildContext context) {
     return NavigationRail(
+      backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(1),
       selectedIndex: _selectedIndex,
       groupAlignment: -1,
       onDestinationSelected: (int index) {
