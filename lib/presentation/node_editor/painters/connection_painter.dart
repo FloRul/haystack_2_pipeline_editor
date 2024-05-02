@@ -18,8 +18,8 @@ class ConnectionPainter extends CustomPainter {
 
     for (var connection in connections) {
       canvas.drawLine(
-        connection.from.position + gridOffset,
-        connection.to.position + gridOffset,
+        connection.from.position,
+        connection.to.position,
         paint,
       );
     }

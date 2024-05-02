@@ -53,7 +53,7 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
         if (connection.from.node.id == nodeId) {
           return connection.copyWith(
             from: connection.from.copyWith(
-              nodeOffset: connection.from.nodeOffset + offset,
+              nodeOffset: connection.from.nodeOffset + offset ,
             ),
           );
         } else if (connection.to.node.id == nodeId) {
