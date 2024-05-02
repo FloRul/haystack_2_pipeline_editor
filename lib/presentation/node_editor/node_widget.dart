@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:haystack_2_pipeline_editor/models/nodes/base_node.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/knob.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/nodes.dart';
 
@@ -46,7 +47,8 @@ class NodeWidget extends StatelessWidget {
               color: Colors.red,
               duration: const Duration(milliseconds: 50),
               knobSize: knobSize,
-              data: 'knob_${node.nodeId}_input',
+              nodeId: node.nodeId,
+              socketType: SocketType.input,
             ),
           ),
           Positioned(
@@ -57,7 +59,8 @@ class NodeWidget extends StatelessWidget {
               color: Colors.green,
               duration: const Duration(milliseconds: 50),
               knobSize: knobSize,
-              data: 'knob_${node.nodeId}_output',
+              nodeId: node.nodeId,
+              socketType: SocketType.output,
             ),
           ),
         ],

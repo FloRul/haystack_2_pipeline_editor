@@ -1,23 +1,28 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:haystack_2_pipeline_editor/models/nodes/base_node.dart';
+import 'package:haystack_2_pipeline_editor/presentation/providers/pipeline_editor_provider.dart';
 
-class Knob extends StatefulWidget {
+class Knob extends ConsumerStatefulWidget {
   const Knob({
     super.key,
     required this.color,
     required this.duration,
     required this.knobSize,
-    required this.data,
+    required this.nodeId,
+    required this.socketType,
   });
 
   final Color color;
   final Duration duration;
   final double knobSize;
-  final String data;
+  final String nodeId;
+  final SocketType socketType;
   @override
-  State<Knob> createState() => _KnobState();
+  ConsumerState<Knob> createState() => _KnobState();
 }
 
-class _KnobState extends State<Knob> {
+class _KnobState extends ConsumerState<Knob> {
   bool _isHovering = false;
   bool _isDragging = false;
   Offset _cursorPosition = Offset.zero;
@@ -25,10 +30,11 @@ class _KnobState extends State<Knob> {
 
   @override
   Widget build(BuildContext context) {
+    var notifier = ref.watch(pipelineEditorStateNotifierProvider.notifier);
     return MouseRegion(
       onEnter: (event) => setState(() => _isHovering = true),
       onExit: (event) => setState(() => _isHovering = false),
-      child: DragTarget<String>(
+      child: DragTarget<(String, SocketType)>(
         builder: (context, candidateData, rejectedData) {
           return CustomPaint(
             key: _customPaintKey,
@@ -38,8 +44,8 @@ class _KnobState extends State<Knob> {
               cursorPosition: _cursorPosition,
               canPaint: _isDragging,
             ),
-            child: Draggable<String>(
-              data: widget.data,
+            child: Draggable<(String, SocketType)>(
+              data: (widget.nodeId, widget.socketType),
               onDragStarted: () => setState(() => _isDragging = true),
               onDragEnd: (details) => setState(() => _isDragging = false),
               onDraggableCanceled: (_, __) => setState(() => _isDragging = false),
@@ -73,10 +79,11 @@ class _KnobState extends State<Knob> {
           );
         },
         onWillAcceptWithDetails: (data) {
-          return data.data.startsWith('knob_'); // Add this line
+          return data.data.$1 != widget.nodeId && data.data.$2 != widget.socketType; // Add this line
         },
-        onAcceptWithDetails: (DragTargetDetails<String> details) {
-          print('Connecting: ${details.data} with ${widget.data}');
+        onAcceptWithDetails: (DragTargetDetails<(String, SocketType)> details) {
+          print('Connecting: ${details.data} with ${widget.nodeId}');
+          notifier.registerConnection(fromNodeId: widget.nodeId, toNodeId: details.data.$1);
         },
       ),
     );

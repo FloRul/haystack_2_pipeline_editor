@@ -15,13 +15,24 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
 
   void addNode(BaseNode node, double dx, double dy) {
     state = state.copyWith(
-      nodes: [...state.nodes, node],
       nodesUI: [
         ...state.nodesUI,
         NodeUI(
           nodeId: node.id,
           dx: dx,
           dy: dy,
+          input: SocketUI(
+            nodeId: node.id,
+            id: '${node.id}_input',
+            dx: 0,
+            dy: 50,
+          ),
+          output: SocketUI(
+            nodeId: node.id,
+            id: '${node.id}_output',
+            dx: 120,
+            dy: 50,
+          ),
         ),
       ],
     );
@@ -52,5 +63,22 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
         updateNodePosition(state.nodesUI[i].nodeId, delta);
       }
     }
+  }
+
+  void registerConnection({required String fromNodeId, required String toNodeId}) {
+    // Find the input and output sockets
+    final inputSocket = state.nodesUI.firstWhere((nodeUI) => nodeUI.nodeId == toNodeId,).input;
+
+    final outputSocket = state.nodesUI.firstWhere((nodeUI) => nodeUI.nodeId == fromNodeId,).output;
+
+    state = state.copyWith(
+      connections: [
+        ...state.connections,
+        ConnectionUI(
+          input: inputSocket,
+          output: outputSocket,
+        ),
+      ],
+    );
   }
 }
