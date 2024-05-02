@@ -21,56 +21,67 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
     var newNode = NodeUI(nodeId: id, position: position);
     var inputSocket = SocketUI(
       nodeId: newNode.id,
-      nodeOffset: Offset(0, nodeSize.height / 2),
+      position: position + Offset(0, nodeSize.height / 2),
       type: SocketType.input,
     );
     var outputSocket = SocketUI(
       nodeId: newNode.id,
-      nodeOffset: Offset(nodeSize.width, nodeSize.height / 2),
+      position: position + Offset(nodeSize.width, nodeSize.height / 2),
       type: SocketType.output,
     );
     state = state.copyWith(
       nodesUI: [
         ...state.nodesUI,
-        newNode.copyWith(input: inputSocket, output: outputSocket),
+        newNode,
+      ],
+      sockets: [
+        ...state.sockets,
+        inputSocket,
+        outputSocket,
       ],
     );
   }
 
   void updateNodePosition(String nodeId, Offset offset) {
+    var newNodes = state.nodesUI.map((nodeUI) {
+      if (nodeUI.id == nodeId) {
+        return nodeUI.copyWith(
+          position: nodeUI.position + offset,
+        );
+      }
+      return nodeUI;
+    }).toList();
+
+    var newSockets = state.sockets.map((socket) {
+      if (socket.nodeId == nodeId) {
+        return socket.copyWith(
+          position: socket.position + offset,
+        );
+      }
+      return socket;
+    }).toList();
+
+    var newConnections = state.connections.map((c) {
+      if (c.from.nodeId == nodeId) {
+        return c.copyWith(
+          from: c.from.copyWith(
+            position: c.from.position + offset,
+          ),
+        );
+      } else if (c.to.nodeId == nodeId) {
+        return c.copyWith(
+          to: c.to.copyWith(
+            position: c.to.position + offset,
+          ),
+        );
+      }
+      return c;
+    }).toList();
+
     state = state.copyWith(
-      nodesUI: state.nodesUI.map((nodeUI) {
-        if (nodeUI.id == nodeId) {
-          return nodeUI.copyWith(
-            position: nodeUI.position + offset,
-          );
-        }
-        return nodeUI;
-      }).toList(),
-      sockets: state.sockets.map((socket) {
-        if (socket.nodeId == nodeId) {
-          return socket.copyWith(
-            nodeOffset: socket.nodeOffset + offset,
-          );
-        }
-        return socket;
-      }).toList(),
-      connections: state.connections.map((connection) {
-        if (connection.from.nodeId == nodeId) {
-          return connection.copyWith(
-            from: connection.from.copyWith(
-              nodeOffset: connection.from.nodeOffset + offset,
-            ),
-          );
-        } else if (connection.to.nodeId == nodeId) {
-          return connection.copyWith(
-            to: connection.to.copyWith(
-              nodeOffset: connection.to.nodeOffset + offset,
-            ),
-          );
-        }
-        return connection;
-      }).toList(),
+      nodesUI: newNodes,
+      sockets: newSockets,
+      connections: newConnections,
     );
   }
 
@@ -78,12 +89,16 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
     var nextOffset = state.gridOffset + delta;
     if ((nextOffset.dx <= state.maxDragOffset && nextOffset.dy <= state.maxDragOffset) &&
         (nextOffset.dx >= -state.maxDragOffset && nextOffset.dy >= -state.maxDragOffset)) {
+      var newNodes = state.nodesUI.map((nodeUI) {
+        return nodeUI.copyWith(
+          position: nodeUI.position + delta,
+        );
+      }).toList();
+
       state = state.copyWith(
         gridOffset: nextOffset,
+        nodesUI: newNodes,
       );
-      for (int i = 0; i < state.nodesUI.length; i++) {
-        updateNodePosition(state.nodesUI[i].id, delta);
-      }
     }
   }
 

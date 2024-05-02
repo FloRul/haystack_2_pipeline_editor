@@ -4,11 +4,9 @@ import 'package:haystack_2_pipeline_editor/presentation/node_editor/nodes.dart';
 class ConnectionPainter extends CustomPainter {
   ConnectionPainter({
     required this.connections,
-    required this.gridOffset,
   });
 
   final List<ConnectionUI> connections;
-  final Offset gridOffset;
 
   @override
   void paint(Canvas canvas, Size size) {

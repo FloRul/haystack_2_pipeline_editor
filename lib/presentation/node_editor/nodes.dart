@@ -23,8 +23,6 @@ class NodeUI {
   NodeUI copyWith({
     String? nodeId,
     Offset? position,
-    SocketUI? input,
-    SocketUI? output,
   }) {
     return NodeUI(
       nodeId: nodeId ?? id,
@@ -35,31 +33,30 @@ class NodeUI {
 
 class SocketUI {
   // the position of the socket relative to the node position
-  final Offset nodeOffset;
+  final Offset position;
   final String nodeId;
   final SocketType type;
 
   SocketUI({
-    required this.nodeOffset,
+    required this.position,
     required this.nodeId,
     required this.type,
   });
 
   String get id => '${nodeId}_${type.name}';
-  Offset getPosition(Offset nodePosition) => nodePosition + nodeOffset;
 
   @override
   String toString() {
-    return 'SocketUI{id: $id, nodeOffset: $nodeOffset, node: $nodeId, type: $type}';
+    return 'SocketUI{id: $id, nodeOffset: $position, node: $nodeId, type: $type}';
   }
 
   SocketUI copyWith({
-    Offset? nodeOffset,
+    Offset? position,
     String? nodeId,
     SocketType? type,
   }) {
     return SocketUI(
-      nodeOffset: nodeOffset ?? this.nodeOffset,
+      position: position ?? this.position,
       nodeId: nodeId ?? this.nodeId,
       type: type ?? this.type,
     );

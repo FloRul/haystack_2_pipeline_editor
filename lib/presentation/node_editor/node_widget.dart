@@ -7,9 +7,13 @@ class NodeWidget extends StatelessWidget {
   const NodeWidget({
     super.key,
     required this.node,
+    required this.inputSocket,
+    required this.outputSocket,
   });
 
   final NodeUI node;
+  final SocketUI inputSocket;
+  final SocketUI outputSocket;
 
   final knobSize = 20.0;
 
@@ -43,29 +47,23 @@ class NodeWidget extends StatelessWidget {
             left: knobSize / 4,
             top: height / 2 - knobSize / 2,
             child: Knob(
-                key: ValueKey('${node.id}_input'),
-                color: Colors.red,
-                duration: const Duration(milliseconds: 50),
-                knobSize: knobSize,
-                socket: SocketUI(
-                  nodeId: node.id,
-                  nodeOffset: Offset(0, height / 2),
-                  type: SocketType.input,
-                )),
+              key: ValueKey('${node.id}_input'),
+              color: Colors.red,
+              duration: const Duration(milliseconds: 50),
+              knobSize: knobSize,
+              socket: inputSocket,
+            ),
           ),
           Positioned(
             right: knobSize / 4,
             top: height / 2 - knobSize / 2,
             child: Knob(
-                key: ValueKey('${node.id}_output'),
-                color: Colors.green,
-                duration: const Duration(milliseconds: 50),
-                knobSize: knobSize,
-                socket: SocketUI(
-                  nodeId: node.id,
-                  nodeOffset: Offset(width, height / 2),
-                  type: SocketType.output,
-                )),
+              key: ValueKey('${node.id}_output'),
+              color: Colors.green,
+              duration: const Duration(milliseconds: 50),
+              knobSize: knobSize,
+              socket: outputSocket,
+            ),
           ),
         ],
       ),
