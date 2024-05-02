@@ -46,6 +46,7 @@ class NodeWidget extends StatelessWidget {
               color: Colors.red,
               duration: const Duration(milliseconds: 50),
               knobSize: knobSize,
+              data: 'knob_${node.nodeId}_input',
             ),
           ),
           Positioned(
@@ -56,6 +57,7 @@ class NodeWidget extends StatelessWidget {
               color: Colors.green,
               duration: const Duration(milliseconds: 50),
               knobSize: knobSize,
+              data: 'knob_${node.nodeId}_output',
             ),
           ),
         ],
