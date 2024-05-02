@@ -74,6 +74,10 @@ class SocketUI {
       type: type ?? this.type,
     );
   }
+
+  static bool areCompatible(SocketUI from, SocketUI to) {
+    return from.type != to.type && from.node.id != to.node.id;
+  }
 }
 
 class ConnectionUI {

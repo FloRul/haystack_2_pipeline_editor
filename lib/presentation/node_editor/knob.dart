@@ -77,7 +77,7 @@ class _KnobState extends ConsumerState<Knob> {
           );
         },
         onWillAcceptWithDetails: (data) {
-          return data.data.node.id != widget.socket.node.id && data.data.type != widget.socket.type; // Add this line
+          return SocketUI.areCompatible(widget.socket, data.data);
         },
         onAcceptWithDetails: (DragTargetDetails<SocketUI> details) {
           print('Connecting: ${details.data} with ${(widget.socket)}');
