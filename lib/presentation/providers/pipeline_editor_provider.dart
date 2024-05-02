@@ -20,12 +20,12 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
   }) {
     var newNode = NodeUI(nodeId: id, position: position);
     var inputSocket = SocketUI(
-      node: newNode,
+      nodeId: newNode.id,
       nodeOffset: Offset(0, nodeSize.height / 2),
       type: SocketType.input,
     );
     var outputSocket = SocketUI(
-      node: newNode,
+      nodeId: newNode.id,
       nodeOffset: Offset(nodeSize.width, nodeSize.height / 2),
       type: SocketType.output,
     );
@@ -43,20 +43,26 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
         if (nodeUI.id == nodeId) {
           return nodeUI.copyWith(
             position: nodeUI.position + offset,
-            input: nodeUI.input!.copyWith(node: nodeUI),
-            output: nodeUI.output!.copyWith(node: nodeUI),
           );
         }
         return nodeUI;
       }).toList(),
+      sockets: state.sockets.map((socket) {
+        if (socket.nodeId == nodeId) {
+          return socket.copyWith(
+            nodeOffset: socket.nodeOffset + offset,
+          );
+        }
+        return socket;
+      }).toList(),
       connections: state.connections.map((connection) {
-        if (connection.from.node.id == nodeId) {
+        if (connection.from.nodeId == nodeId) {
           return connection.copyWith(
             from: connection.from.copyWith(
-              nodeOffset: connection.from.nodeOffset + offset ,
+              nodeOffset: connection.from.nodeOffset + offset,
             ),
           );
-        } else if (connection.to.node.id == nodeId) {
+        } else if (connection.to.nodeId == nodeId) {
           return connection.copyWith(
             to: connection.to.copyWith(
               nodeOffset: connection.to.nodeOffset + offset,

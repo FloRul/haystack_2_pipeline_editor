@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$PipelineEditorState {
   List<ConnectionUI> get connections => throw _privateConstructorUsedError;
   List<NodeUI> get nodesUI => throw _privateConstructorUsedError;
+  List<SocketUI> get sockets => throw _privateConstructorUsedError;
   Offset get gridOffset => throw _privateConstructorUsedError;
   double get maxGridSize => throw _privateConstructorUsedError;
   double get maxDragOffset => throw _privateConstructorUsedError;
@@ -36,6 +37,7 @@ abstract class $PipelineEditorStateCopyWith<$Res> {
   $Res call(
       {List<ConnectionUI> connections,
       List<NodeUI> nodesUI,
+      List<SocketUI> sockets,
       Offset gridOffset,
       double maxGridSize,
       double maxDragOffset});
@@ -56,6 +58,7 @@ class _$PipelineEditorStateCopyWithImpl<$Res, $Val extends PipelineEditorState>
   $Res call({
     Object? connections = null,
     Object? nodesUI = null,
+    Object? sockets = null,
     Object? gridOffset = null,
     Object? maxGridSize = null,
     Object? maxDragOffset = null,
@@ -69,6 +72,10 @@ class _$PipelineEditorStateCopyWithImpl<$Res, $Val extends PipelineEditorState>
           ? _value.nodesUI
           : nodesUI // ignore: cast_nullable_to_non_nullable
               as List<NodeUI>,
+      sockets: null == sockets
+          ? _value.sockets
+          : sockets // ignore: cast_nullable_to_non_nullable
+              as List<SocketUI>,
       gridOffset: null == gridOffset
           ? _value.gridOffset
           : gridOffset // ignore: cast_nullable_to_non_nullable
@@ -96,6 +103,7 @@ abstract class _$$PipelineStateImplCopyWith<$Res>
   $Res call(
       {List<ConnectionUI> connections,
       List<NodeUI> nodesUI,
+      List<SocketUI> sockets,
       Offset gridOffset,
       double maxGridSize,
       double maxDragOffset});
@@ -114,6 +122,7 @@ class __$$PipelineStateImplCopyWithImpl<$Res>
   $Res call({
     Object? connections = null,
     Object? nodesUI = null,
+    Object? sockets = null,
     Object? gridOffset = null,
     Object? maxGridSize = null,
     Object? maxDragOffset = null,
@@ -127,6 +136,10 @@ class __$$PipelineStateImplCopyWithImpl<$Res>
           ? _value._nodesUI
           : nodesUI // ignore: cast_nullable_to_non_nullable
               as List<NodeUI>,
+      sockets: null == sockets
+          ? _value._sockets
+          : sockets // ignore: cast_nullable_to_non_nullable
+              as List<SocketUI>,
       gridOffset: null == gridOffset
           ? _value.gridOffset
           : gridOffset // ignore: cast_nullable_to_non_nullable
@@ -149,11 +162,13 @@ class _$PipelineStateImpl implements _PipelineState {
   const _$PipelineStateImpl(
       {required final List<ConnectionUI> connections,
       required final List<NodeUI> nodesUI,
+      required final List<SocketUI> sockets,
       required this.gridOffset,
       required this.maxGridSize,
       required this.maxDragOffset})
       : _connections = connections,
-        _nodesUI = nodesUI;
+        _nodesUI = nodesUI,
+        _sockets = sockets;
 
   final List<ConnectionUI> _connections;
   @override
@@ -171,6 +186,14 @@ class _$PipelineStateImpl implements _PipelineState {
     return EqualUnmodifiableListView(_nodesUI);
   }
 
+  final List<SocketUI> _sockets;
+  @override
+  List<SocketUI> get sockets {
+    if (_sockets is EqualUnmodifiableListView) return _sockets;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_sockets);
+  }
+
   @override
   final Offset gridOffset;
   @override
@@ -180,7 +203,7 @@ class _$PipelineStateImpl implements _PipelineState {
 
   @override
   String toString() {
-    return 'PipelineEditorState(connections: $connections, nodesUI: $nodesUI, gridOffset: $gridOffset, maxGridSize: $maxGridSize, maxDragOffset: $maxDragOffset)';
+    return 'PipelineEditorState(connections: $connections, nodesUI: $nodesUI, sockets: $sockets, gridOffset: $gridOffset, maxGridSize: $maxGridSize, maxDragOffset: $maxDragOffset)';
   }
 
   @override
@@ -191,6 +214,7 @@ class _$PipelineStateImpl implements _PipelineState {
             const DeepCollectionEquality()
                 .equals(other._connections, _connections) &&
             const DeepCollectionEquality().equals(other._nodesUI, _nodesUI) &&
+            const DeepCollectionEquality().equals(other._sockets, _sockets) &&
             (identical(other.gridOffset, gridOffset) ||
                 other.gridOffset == gridOffset) &&
             (identical(other.maxGridSize, maxGridSize) ||
@@ -204,6 +228,7 @@ class _$PipelineStateImpl implements _PipelineState {
       runtimeType,
       const DeepCollectionEquality().hash(_connections),
       const DeepCollectionEquality().hash(_nodesUI),
+      const DeepCollectionEquality().hash(_sockets),
       gridOffset,
       maxGridSize,
       maxDragOffset);
@@ -219,6 +244,7 @@ abstract class _PipelineState implements PipelineEditorState {
   const factory _PipelineState(
       {required final List<ConnectionUI> connections,
       required final List<NodeUI> nodesUI,
+      required final List<SocketUI> sockets,
       required final Offset gridOffset,
       required final double maxGridSize,
       required final double maxDragOffset}) = _$PipelineStateImpl;
@@ -227,6 +253,8 @@ abstract class _PipelineState implements PipelineEditorState {
   List<ConnectionUI> get connections;
   @override
   List<NodeUI> get nodesUI;
+  @override
+  List<SocketUI> get sockets;
   @override
   Offset get gridOffset;
   @override
