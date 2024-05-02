@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$PipelineEditorState {
   List<ConnectionUI> get connections => throw _privateConstructorUsedError;
   List<NodeUI> get nodesUI => throw _privateConstructorUsedError;
-  Offset get dragOffset => throw _privateConstructorUsedError;
+  Offset get gridOffset => throw _privateConstructorUsedError;
   double get maxGridSize => throw _privateConstructorUsedError;
   double get maxDragOffset => throw _privateConstructorUsedError;
 
@@ -36,7 +36,7 @@ abstract class $PipelineEditorStateCopyWith<$Res> {
   $Res call(
       {List<ConnectionUI> connections,
       List<NodeUI> nodesUI,
-      Offset dragOffset,
+      Offset gridOffset,
       double maxGridSize,
       double maxDragOffset});
 }
@@ -56,7 +56,7 @@ class _$PipelineEditorStateCopyWithImpl<$Res, $Val extends PipelineEditorState>
   $Res call({
     Object? connections = null,
     Object? nodesUI = null,
-    Object? dragOffset = null,
+    Object? gridOffset = null,
     Object? maxGridSize = null,
     Object? maxDragOffset = null,
   }) {
@@ -69,9 +69,9 @@ class _$PipelineEditorStateCopyWithImpl<$Res, $Val extends PipelineEditorState>
           ? _value.nodesUI
           : nodesUI // ignore: cast_nullable_to_non_nullable
               as List<NodeUI>,
-      dragOffset: null == dragOffset
-          ? _value.dragOffset
-          : dragOffset // ignore: cast_nullable_to_non_nullable
+      gridOffset: null == gridOffset
+          ? _value.gridOffset
+          : gridOffset // ignore: cast_nullable_to_non_nullable
               as Offset,
       maxGridSize: null == maxGridSize
           ? _value.maxGridSize
@@ -96,7 +96,7 @@ abstract class _$$PipelineStateImplCopyWith<$Res>
   $Res call(
       {List<ConnectionUI> connections,
       List<NodeUI> nodesUI,
-      Offset dragOffset,
+      Offset gridOffset,
       double maxGridSize,
       double maxDragOffset});
 }
@@ -114,7 +114,7 @@ class __$$PipelineStateImplCopyWithImpl<$Res>
   $Res call({
     Object? connections = null,
     Object? nodesUI = null,
-    Object? dragOffset = null,
+    Object? gridOffset = null,
     Object? maxGridSize = null,
     Object? maxDragOffset = null,
   }) {
@@ -127,9 +127,9 @@ class __$$PipelineStateImplCopyWithImpl<$Res>
           ? _value._nodesUI
           : nodesUI // ignore: cast_nullable_to_non_nullable
               as List<NodeUI>,
-      dragOffset: null == dragOffset
-          ? _value.dragOffset
-          : dragOffset // ignore: cast_nullable_to_non_nullable
+      gridOffset: null == gridOffset
+          ? _value.gridOffset
+          : gridOffset // ignore: cast_nullable_to_non_nullable
               as Offset,
       maxGridSize: null == maxGridSize
           ? _value.maxGridSize
@@ -149,7 +149,7 @@ class _$PipelineStateImpl implements _PipelineState {
   const _$PipelineStateImpl(
       {required final List<ConnectionUI> connections,
       required final List<NodeUI> nodesUI,
-      required this.dragOffset,
+      required this.gridOffset,
       required this.maxGridSize,
       required this.maxDragOffset})
       : _connections = connections,
@@ -172,7 +172,7 @@ class _$PipelineStateImpl implements _PipelineState {
   }
 
   @override
-  final Offset dragOffset;
+  final Offset gridOffset;
   @override
   final double maxGridSize;
   @override
@@ -180,7 +180,7 @@ class _$PipelineStateImpl implements _PipelineState {
 
   @override
   String toString() {
-    return 'PipelineEditorState(connections: $connections, nodesUI: $nodesUI, dragOffset: $dragOffset, maxGridSize: $maxGridSize, maxDragOffset: $maxDragOffset)';
+    return 'PipelineEditorState(connections: $connections, nodesUI: $nodesUI, gridOffset: $gridOffset, maxGridSize: $maxGridSize, maxDragOffset: $maxDragOffset)';
   }
 
   @override
@@ -191,8 +191,8 @@ class _$PipelineStateImpl implements _PipelineState {
             const DeepCollectionEquality()
                 .equals(other._connections, _connections) &&
             const DeepCollectionEquality().equals(other._nodesUI, _nodesUI) &&
-            (identical(other.dragOffset, dragOffset) ||
-                other.dragOffset == dragOffset) &&
+            (identical(other.gridOffset, gridOffset) ||
+                other.gridOffset == gridOffset) &&
             (identical(other.maxGridSize, maxGridSize) ||
                 other.maxGridSize == maxGridSize) &&
             (identical(other.maxDragOffset, maxDragOffset) ||
@@ -204,7 +204,7 @@ class _$PipelineStateImpl implements _PipelineState {
       runtimeType,
       const DeepCollectionEquality().hash(_connections),
       const DeepCollectionEquality().hash(_nodesUI),
-      dragOffset,
+      gridOffset,
       maxGridSize,
       maxDragOffset);
 
@@ -219,7 +219,7 @@ abstract class _PipelineState implements PipelineEditorState {
   const factory _PipelineState(
       {required final List<ConnectionUI> connections,
       required final List<NodeUI> nodesUI,
-      required final Offset dragOffset,
+      required final Offset gridOffset,
       required final double maxGridSize,
       required final double maxDragOffset}) = _$PipelineStateImpl;
 
@@ -228,7 +228,7 @@ abstract class _PipelineState implements PipelineEditorState {
   @override
   List<NodeUI> get nodesUI;
   @override
-  Offset get dragOffset;
+  Offset get gridOffset;
   @override
   double get maxGridSize;
   @override

@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:haystack_2_pipeline_editor/models/nodes/base_node.dart';
+import 'package:haystack_2_pipeline_editor/presentation/node_editor/nodes.dart';
 import 'package:haystack_2_pipeline_editor/presentation/providers/pipeline_editor_provider.dart';
 
 class Knob extends ConsumerStatefulWidget {
@@ -9,15 +9,13 @@ class Knob extends ConsumerStatefulWidget {
     required this.color,
     required this.duration,
     required this.knobSize,
-    required this.nodeId,
-    required this.socketType,
+    required this.socket,
   });
 
   final Color color;
   final Duration duration;
   final double knobSize;
-  final String nodeId;
-  final SocketType socketType;
+  final SocketUI socket;
   @override
   ConsumerState<Knob> createState() => _KnobState();
 }
@@ -34,7 +32,7 @@ class _KnobState extends ConsumerState<Knob> {
     return MouseRegion(
       onEnter: (event) => setState(() => _isHovering = true),
       onExit: (event) => setState(() => _isHovering = false),
-      child: DragTarget<(String, SocketType)>(
+      child: DragTarget<SocketUI>(
         builder: (context, candidateData, rejectedData) {
           return CustomPaint(
             key: _customPaintKey,
@@ -44,8 +42,8 @@ class _KnobState extends ConsumerState<Knob> {
               cursorPosition: _cursorPosition,
               canPaint: _isDragging,
             ),
-            child: Draggable<(String, SocketType)>(
-              data: (widget.nodeId, widget.socketType),
+            child: Draggable<SocketUI>(
+              data: widget.socket,
               onDragStarted: () => setState(() => _isDragging = true),
               onDragEnd: (details) => setState(() => _isDragging = false),
               onDraggableCanceled: (_, __) => setState(() => _isDragging = false),
@@ -79,11 +77,11 @@ class _KnobState extends ConsumerState<Knob> {
           );
         },
         onWillAcceptWithDetails: (data) {
-          return data.data.$1 != widget.nodeId && data.data.$2 != widget.socketType; // Add this line
+          return data.data.node.id != widget.socket.node.id && data.data.type != widget.socket.type; // Add this line
         },
-        onAcceptWithDetails: (DragTargetDetails<(String, SocketType)> details) {
-          print('Connecting: ${details.data} with ${widget.nodeId}');
-          notifier.registerConnection(fromNodeId: widget.nodeId, toNodeId: details.data.$1);
+        onAcceptWithDetails: (DragTargetDetails<SocketUI> details) {
+          print('Connecting: ${details.data} with ${(widget.socket)}');
+          notifier.registerConnection(from: widget.socket, to: details.data);
         },
       ),
     );

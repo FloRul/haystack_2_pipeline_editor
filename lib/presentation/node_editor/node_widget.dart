@@ -1,5 +1,4 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:haystack_2_pipeline_editor/models/nodes/base_node.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/knob.dart';
 import 'package:haystack_2_pipeline_editor/presentation/node_editor/nodes.dart';
 
@@ -32,10 +31,10 @@ class NodeWidget extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  node.nodeId,
+                  node.id,
                   style: const TextStyle(color: Colors.white),
                 ),
-                Text('${node.dx.ceil()}, ${node.dy.ceil()}')
+                Text('${node.position.dx.ceil()}, ${node.position.dy.ceil()}')
               ],
             ),
           ),
@@ -43,24 +42,22 @@ class NodeWidget extends StatelessWidget {
             left: knobSize / 4,
             top: height / 2 - knobSize / 2,
             child: Knob(
-              key: ValueKey('${node.nodeId}_input'),
+              key: ValueKey('${node.id}_input'),
               color: Colors.red,
               duration: const Duration(milliseconds: 50),
               knobSize: knobSize,
-              nodeId: node.nodeId,
-              socketType: SocketType.input,
+              socket: node.input!,
             ),
           ),
           Positioned(
             right: knobSize / 4,
             top: height / 2 - knobSize / 2,
             child: Knob(
-              key: ValueKey('${node.nodeId}_output'),
+              key: ValueKey('${node.id}_output'),
               color: Colors.green,
               duration: const Duration(milliseconds: 50),
               knobSize: knobSize,
-              nodeId: node.nodeId,
-              socketType: SocketType.output,
+              socket: node.output!,
             ),
           ),
         ],

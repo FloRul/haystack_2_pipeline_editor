@@ -2,16 +2,16 @@
 
 class BackgroundGridPainter extends CustomPainter {
   BackgroundGridPainter({
-    required this.translationOffset,
+    required this.gridOffset,
     required this.maxGridSize,
   });
 
-  final Offset translationOffset;
+  final Offset gridOffset;
   final double maxGridSize;
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.translate(translationOffset.dx, translationOffset.dy);
+    canvas.translate(gridOffset.dx, gridOffset.dy);
     var paint = Paint()
       ..color = Colors.red[200]!
       ..strokeWidth = 1;

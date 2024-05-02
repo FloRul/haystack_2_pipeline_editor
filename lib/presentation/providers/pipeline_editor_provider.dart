@@ -13,27 +13,26 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
     return PipelineEditorState.initial();
   }
 
-  void addNode(BaseNode node, double dx, double dy) {
+  void addNode({
+    required String id,
+    required Offset position,
+    required Size nodeSize,
+  }) {
+    var newNode = NodeUI(nodeId: id, position: position);
+    var inputSocket = SocketUI(
+      node: newNode,
+      nodeOffset: Offset(0, nodeSize.height / 2),
+      type: SocketType.input,
+    );
+    var outputSocket = SocketUI(
+      node: newNode,
+      nodeOffset: Offset(nodeSize.width, nodeSize.height / 2),
+      type: SocketType.output,
+    );
     state = state.copyWith(
       nodesUI: [
         ...state.nodesUI,
-        NodeUI(
-          nodeId: node.id,
-          dx: dx,
-          dy: dy,
-          input: SocketUI(
-            nodeId: node.id,
-            id: '${node.id}_input',
-            dx: 0,
-            dy: 50,
-          ),
-          output: SocketUI(
-            nodeId: node.id,
-            id: '${node.id}_output',
-            dx: 120,
-            dy: 50,
-          ),
-        ),
+        newNode.copyWith(input: inputSocket, output: outputSocket),
       ],
     );
   }
@@ -41,44 +40,58 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
   void updateNodePosition(String nodeId, Offset offset) {
     state = state.copyWith(
       nodesUI: state.nodesUI.map((nodeUI) {
-        if (nodeUI.nodeId == nodeId) {
+        if (nodeUI.id == nodeId) {
           return nodeUI.copyWith(
-            dx: offset.dx + nodeUI.dx,
-            dy: offset.dy + nodeUI.dy,
+            position: nodeUI.position + offset,
+            input: nodeUI.input!.copyWith(node: nodeUI),
+            output: nodeUI.output!.copyWith(node: nodeUI),
           );
         }
         return nodeUI;
+      }).toList(),
+      connections: state.connections.map((connection) {
+        if (connection.from.node.id == nodeId) {
+          return connection.copyWith(
+            from: connection.from.copyWith(
+              nodeOffset: connection.from.nodeOffset + offset,
+            ),
+          );
+        } else if (connection.to.node.id == nodeId) {
+          return connection.copyWith(
+            to: connection.to.copyWith(
+              nodeOffset: connection.to.nodeOffset + offset,
+            ),
+          );
+        }
+        return connection;
       }).toList(),
     );
   }
 
   void onPanGrid(Offset delta) {
-    var nextOffset = state.dragOffset + delta;
+    var nextOffset = state.gridOffset + delta;
     if ((nextOffset.dx <= state.maxDragOffset && nextOffset.dy <= state.maxDragOffset) &&
         (nextOffset.dx >= -state.maxDragOffset && nextOffset.dy >= -state.maxDragOffset)) {
       state = state.copyWith(
-        dragOffset: nextOffset,
+        gridOffset: nextOffset,
       );
       for (int i = 0; i < state.nodesUI.length; i++) {
-        updateNodePosition(state.nodesUI[i].nodeId, delta);
+        updateNodePosition(state.nodesUI[i].id, delta);
       }
     }
   }
 
-  void registerConnection({required String fromNodeId, required String toNodeId}) {
-    // Find the input and output sockets
-    final inputSocket = state.nodesUI.firstWhere((nodeUI) => nodeUI.nodeId == toNodeId,).input;
-
-    final outputSocket = state.nodesUI.firstWhere((nodeUI) => nodeUI.nodeId == fromNodeId,).output;
-
+  void registerConnection({required SocketUI from, required SocketUI to}) {
     state = state.copyWith(
       connections: [
         ...state.connections,
         ConnectionUI(
-          input: inputSocket,
-          output: outputSocket,
+          from: from,
+          to: to,
         ),
       ],
     );
   }
+
+  void clear() => state = PipelineEditorState.initial();
 }
