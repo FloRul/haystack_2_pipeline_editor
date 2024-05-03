@@ -95,9 +95,28 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
         );
       }).toList();
 
+      var newSockets = state.sockets.map((socket) {
+        return socket.copyWith(
+          position: socket.position + delta,
+        );
+      }).toList();
+
+      var newConnections = state.connections.map((c) {
+        return c.copyWith(
+          from: c.from.copyWith(
+            position: c.from.position + delta,
+          ),
+          to: c.to.copyWith(
+            position: c.to.position + delta,
+          ),
+        );
+      }).toList();
+
       state = state.copyWith(
         gridOffset: nextOffset,
         nodesUI: newNodes,
+        sockets: newSockets,
+        connections: newConnections,
       );
     }
   }
@@ -107,8 +126,8 @@ class PipelineEditorStateNotifier extends _$PipelineEditorStateNotifier {
       connections: [
         ...state.connections,
         ConnectionUI(
-          from: from,
-          to: to,
+          from: from.copyWith(position: from.position),
+          to: to.copyWith(position: to.position),
         ),
       ],
     );
